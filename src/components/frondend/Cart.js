@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import { Link, useHistory } from "react-router-dom";
+import { imageAPI } from '../../constant/Constant';
+import { NumericFormat } from 'react-number-format';
+import Top from "../../layouts/frondend/Top.js"
+import NavbarContent from '../../layouts/frondend/NavbarContent'
+
+import {pathCart} from '../../constant/Constant'
 
 
 function Cart()
@@ -12,7 +18,7 @@ function Cart()
     var totalCartPrice = 0;
 
     if(!localStorage.getItem('auth_token')){
-        history.push('/');
+        history.push('/login');
         swal("Warning","Login to goto Cart Page","error");
     }
 
@@ -20,14 +26,12 @@ function Cart()
         let isMounted = true;
         
         
-        axios.get(`/api/cart`).then(res=>{
+        axios.get(`/api/cart/cart`).then(res=>{
             if(isMounted)
             {
                 if(res.data.status === 200)
                 {
-                    // console.log(product);
-                    setCart(res.data.cart);
-                    
+                    setCart(res.data.cart);    
                     setLoading(false);
                 }
              
@@ -47,22 +51,23 @@ function Cart()
     const handleDecrement =(cart_id) =>{
         setCart(cart =>
             cart.map((item)=>
-                cart_id === item.id ? {...item, product_quantity: item.product_quantity - (item.product_quantity > 1 ? 1:0) } : item
+                cart_id === item.idCart ? {...item, product_quantity: item.product_quantity - (item.product_quantity > 1 ? 1:0) } : item
+
             )
         );
-        updateCartQuantity(cart_id, "dec")
+            updateCartQuantity(cart_id, "dec")
     }
     const handleIncrement =(cart_id) =>{
         setCart(cart =>
             cart.map((item)=>
-                cart_id === item.id ? {...item, product_quantity: item.product_quantity + (item.product_quantity < 10 ? 1:0) } : item
+                cart_id === item.idCart ? {...item, product_quantity: item.product_quantity + (item.product_quantity < 10 ? 1:0) } : item
             )
         );
-        updateCartQuantity(cart_id, "inc")
+            updateCartQuantity(cart_id, "inc")
     }
-    function updateCartQuantity(cart_id, scope)
+    const updateCartQuantity = (cart_id, scope) =>
     {
-        axios.put(`/api/cart-updatequantity/${cart_id}/${scope}`).then(res=>{
+        axios.put(`/api/cart/cart-updatequantity/${cart_id}/${scope}`).then(res=>{
             if(res.data.status === 200){
                 swal("Success",res.data.message,"success");
             }
@@ -75,7 +80,7 @@ function Cart()
         const thisClicked = e.currentTarget;
         thisClicked.innerText = "Removing";
 
-        axios.delete(`/api/delete-cartitem/${cart_id}`).then( res=> {
+        axios.delete(`/api/cart/delete-cartitem/${cart_id}`).then( res=> {
             if(res.data.status === 200)
             {
                 swal("Success",res.data.message,"success");
@@ -111,29 +116,31 @@ function Cart()
             </thead>
             <tbody>
                 {cart.map((item,idx) => {
-                    totalCartPrice += item.product.seller_price * item.product_quantity;
+                    totalCartPrice += item.seller_price * item.product_quantity;
                     return (
-                        
-                   
-                <tr key={idx}>
-                    <td width="10%">
-                        <img src={`http://localhost:8000/${item.product.image}`} alt={item.product.name} width="50px" height="50px" />
-
-                    </td>
-                    <td>{item.product.name}</td>
-                    <td width="15%" className="text-center">{item.product.seller_price}</td>
-                    <td width="15%">
-                        <div className="input-group">
-                            <button type="button" onClick={() => handleDecrement(item.id)} className="input-group-text">-</button>
-                            <div className="form-control text-center">{item.product_quantity}</div>
-                            <button type="button" onClick={() => handleIncrement(item.id)} className="input-group-text">+</button>
-                        </div>
-                    </td>
-                    <td width="15%" className="text-center">{item.product.seller_price * item.product_quantity}</td>
-                    <td width="10%">
-                        <button type="button" onClick={ (e) => deleteCartitem(e, item.id) } className="btn btn-danger btn-sm">Remove</button>
-                    </td>
-                </tr>
+                        <tr key={idx}>
+                            <td width="10%">
+                                <img src={`${imageAPI}${item.image}`} alt={item.name} width="50px" height="50px" />
+                            </td>
+                            <td>{item.name}</td>
+                            <td width="15%" className="text-center">
+                                <NumericFormat value={item.seller_price} displayType={"text"} thousandSeparator={','} suffix={' vnd'}/>
+                            </td>
+                            <td width="15%">
+                                <div className="input-group">
+                                    <button type="button" onClick={() => handleDecrement(item.idCart)} className="input-group-text">-</button>
+                                    <div className="form-control text-center">{item.product_quantity}</div>
+                                    <button type="button" onClick={() => handleIncrement(item.idCart)} className="input-group-text">+</button>
+                                </div>
+                            </td>
+                            <td width="15%" className="text-center">
+                                <NumericFormat value={item.seller_price * item.product_quantity}  displayType={"text"} thousandSeparator={','} suffix={' vnd'}/>
+                                
+                            </td>
+                            <td width="10%">
+                                <button type="button" onClick={ (e) => deleteCartitem(e, item.idCart) } className="btn btn-danger btn-sm">Remove</button>
+                            </td>
+                        </tr>
                  )
                 })}
             </tbody>
@@ -155,29 +162,30 @@ function Cart()
 
     return(
         <div>
-            <div className="py-3 bg-warning">
-                <div className="container">
-                    <h4>Home / Cart</h4>
-                </div>
+            <NavbarContent />
+            <Top  path={pathCart.path} name={pathCart.name}/>
 
-            </div> 
 
             <div className="py-4 ">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
-                            
                         {cart_HTML}
-
                         </div>
                         <div className="col-md-8"></div>
                         <div className="col-md-4">
                         <div className="card card-body mt-3">
                             <h4>Sub Total:
-                                <span className="float-end">{totalCartPrice}</span>
+                                <span className="float-end">
+                                    <NumericFormat value={totalCartPrice} displayType={"text"} thousandSeparator={','} suffix={' vnd'}/>
+                                    
+                                </span>
                             </h4>
                             <h4>Grand Total:
-                                <span className="float-end">{totalCartPrice}</span>
+                                <span className="float-end">
+                                    <NumericFormat value={totalCartPrice} displayType={"text"} thousandSeparator={','} suffix={' vnd'}/>
+
+                                </span>
                             </h4>
                             <hr />
                             <Link to="/checkout" className="btn btn-primary">Checkout</Link>

@@ -4,6 +4,7 @@ import slug from '../../../utils/CreateSlug'
 
 import axios from "axios"
 import swal from "sweetalert"
+import {imageAPI} from '../../../constant/Constant'
 const EditProduct = (props) => {
     const history = useHistory()
     const [loading, setLoading] = useState(true)
@@ -25,14 +26,14 @@ const EditProduct = (props) => {
     // get item product from id to render
     useEffect(() => {
         // get api to render category to choose 
-        axios.get('/api/all_category')
+        axios.get('/api/category/view_category')
         .then( res => {
             if(res.data.status === 200){
                 setCateList(res.data.categories)
             }
         })
         const product_id = props.match.params.id
-        axios.get(`/api/edit_product/${product_id}`)
+        axios.get(`/api/product/edit_product/${product_id}`)
             .then( res => {
                 if(res.data.status === 200){
                     setproductUpdate(res.data.product)
@@ -67,12 +68,11 @@ const EditProduct = (props) => {
         data.append('color', productUpdate.color)
         data.append('quantity', productUpdate.quantity)
 
-        axios.put(`/api/update_product/${product_id}`,data)
+        axios.put(`/api/product/update_product/${product_id}`,data)
             .then(res => {
                 if(res.data.status === 200){
                     swal("success", res.data.message,'success')  
                     setError([])
-                    console.log(productUpdate);
                     history.push('/admin/product') 
 
                 }else if(res.data.status === 422){
@@ -171,7 +171,7 @@ const EditProduct = (props) => {
                                     <div className="col-md-8 form-group mb-3">
                                         <label> Image</label>
                                         <input type="file" name="image" onChange={handleImageInput} className="form-control"/>
-                                        <img src={`http://localhost:8000/${productUpdate.image}`}/>
+                                        <img src={`${imageAPI}${productUpdate.image}`} alt={`${productUpdate.name}`}/>
                                         <span className="text-danger">{errors.image}</span>
                                         
                                     </div>

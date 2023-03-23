@@ -9,7 +9,7 @@ function ViewCategory(){
     useEffect(() => {
         document.title = "Garbage Categories"
 
-        axios.get('/api/garbage_category')
+        axios.get('/api/category/garbage_category')
             .then(res => {
                 if(res.status === 200){
                     setViewCategory(res.data.categories)
@@ -20,7 +20,7 @@ function ViewCategory(){
         const handleRestore = (e, id) => {
             e.preventDefault();
             const clicked = e.currentTarget
-            axios.put(`/api/restore_category/${id}`)
+            axios.put(`/api/category/restore_category/${id}`)
                 .then(res => {
                     if(res.data.status === 200){
                         swal("success", res.data.message, 'success')
@@ -31,7 +31,7 @@ function ViewCategory(){
     const handleDelete = (e, id) => {
         e.preventDefault()
         const clicked = e.currentTarget
-        axios.put(`/api/destroy_category/${id}`)
+        axios.put(`/api/category/destroy_category/${id}`)
             .then(res => {
                 if(res.data.status === 200){
                     swal("success", res.data.message, 'success')

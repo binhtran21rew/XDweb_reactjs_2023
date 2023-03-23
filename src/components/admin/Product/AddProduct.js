@@ -5,7 +5,6 @@ import swal from 'sweetalert'
 
 import slug from '../../../utils/CreateSlug'
 
-
 function ViewProduct(){
     const [errors, setError] = useState([]);
     const [productInput, setProductInput] = useState({
@@ -23,13 +22,14 @@ function ViewProduct(){
     const handleInput = (e) => {
         e.persist()
         setProductInput({...productInput, [e.target.name]: e.target.value})
+        console.log(productInput);
     }
     const handleImageInput = (e) => {
         setPicture({ image: e.target.files[0]})
     }
     const [cateList, setCateList] = useState([])
     useEffect(() => {
-        axios.get('/api/all_category')
+        axios.get('/api/category/view_category')
             .then( res => {
                 if(res.data.status === 200){
                     setCateList(res.data.categories)
@@ -53,7 +53,7 @@ function ViewProduct(){
 
         
 
-        axios.post('/api/add_product',data)
+        axios.post('/api/product/add_product',data)
             .then(res => {
                 if(res.data.status === 200){
                     swal("success", res.data.message,'success')
@@ -159,7 +159,6 @@ function ViewProduct(){
                                             <label> Image</label>
                                             <input type="file" name="image" onChange={handleImageInput} className="form-control"/>
                                             <span className="text-danger">{errors.image}</span>
-                                        
                                         </div>
                                     </div>
                                 </div>

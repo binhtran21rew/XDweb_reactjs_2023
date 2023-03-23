@@ -3,14 +3,19 @@ import {useHistory} from "react-router-dom";
 
 import axios from "axios";
 import swal from 'sweetalert'
+import slug from '../../../utils/CreateSlug'
+
 function EditCategory(props) {
     const history = useHistory()
     const [loading, setLoading] = useState(true)
-    const [EditCategoryInput, setEditCategory] = useState([]);
+    const [EditCategoryInput, setEditCategory] = useState({
+        name: '',
+        slug: ''
+}   );
     const [error, setError] = useState([])
     useEffect(() => {
         const idCate = props.match.params.id;
-        axios.get(`/api/edit_category/${idCate}`)
+        axios.get(`/api/category/edit_category/${idCate}`)
             .then(res => {
                 if(res.data.status === 200) {
                     setEditCategory(res.data.category)
@@ -29,8 +34,11 @@ function EditCategory(props) {
     const handleUpdate = (e) => {
         e.preventDefault()
         const id = props.match.params.id
-        const data = EditCategoryInput;
-        axios.put(`/api/update_category/${id}`, data)
+        const data = {
+            name: EditCategoryInput.name,
+            slug: slug(EditCategoryInput.name)
+        };
+        axios.put(`/api/category/update_category/${id}`, data)
             .then(res => {
                 if(res.data.status === 200){
                     swal('Success', res.data.message,'success')

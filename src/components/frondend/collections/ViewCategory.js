@@ -1,6 +1,9 @@
 import React, {useState, useEffect } from "react";
 import axios from 'axios';
 import { Link } from "react-router-dom";
+import Top from "../../../layouts/frondend/Top.js"
+import {pathCategory} from '../../../constant/Constant'
+import NavbarContent from '../../../layouts/frondend/NavbarContent'
 
 
 function ViewCategory()
@@ -10,7 +13,7 @@ function ViewCategory()
     useEffect(() => {
         let isMountered = true;
     
-        axios.get(`/api/getCategory`).then(res=>{
+        axios.get(`/api/view/getCategoryChilde`).then(res=>{
             if(isMountered)
             {
                 if(res.data.status === 200)
@@ -40,10 +43,9 @@ function ViewCategory()
                 <div className="col-md-4"key={idx}>
                 <div className="card">
                     <div className="card-body">
-                        <Link to={`collections/${item.slug}`}>
+                        <Link to={`collections/${item.id}`}>
                             <h5>{item.name}</h5>
                         </Link>
-
                     </div>
 
                 </div>
@@ -56,13 +58,10 @@ function ViewCategory()
     
     return (
         <div>
-            <div className="py-3 bg-warning">
-                <div className="container">
-                    <h6>Category Page</h6>
+            <NavbarContent />
 
-                </div>
+            <Top  path={pathCategory.path} name={pathCategory.name}/>
 
-            </div> 
 
             <div className="py-3 ">
                 <div className="container">

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import swal from "sweetalert";
-import { Link, useHistory } from "react-router-dom";
-
+import { useHistory } from "react-router-dom";
+import { NumericFormat } from 'react-number-format';
+import { imageAPI } from '../../../constant/Constant';
+import NavbarContent from '../../../layouts/frondend/NavbarContent'
 
 function ProductDetail(props)
 {
@@ -17,17 +19,14 @@ function ProductDetail(props)
         
         const category_slug = props.match.params.category; 
         const product_slug = props.match.params.product; 
-        axios.get(`/api/viewproductdetail/${category_slug}/${product_slug}`).then(res=>{
+        axios.get(`/api/view/viewproductdetail/${category_slug}/${product_slug}`).then(res=>{
             if(isMounted)
             {
                 if(res.data.status === 200)
                 {
-                    // console.log(product);
                     setProduct(res.data.product);
-                    
                     setLoading(false);
-                }
-             
+                }   
                 else if(res.data.status === 404)
                 {
                     history.push('/collections');
@@ -62,7 +61,7 @@ function ProductDetail(props)
             product_quantity: quantity,
         }
 
-        axios.post(`/api/add-to-cart`,data).then(res=>{
+        axios.post(`/api/cart/add-to-cart`,data).then(res=>{
             if(res.data.status === 201){
                 swal("Success",res.data.message,"success");
             }else if(res.data.status === 409)
@@ -102,7 +101,7 @@ function ProductDetail(props)
                             </div>
                         </div>
                         <div className="cod-md-3 mt-3">
-                            <button type="button" className="btn btn-primary w-100" onClick={submitAddtocart}>Add to Cart</button>
+                            <button type="button" className="btn btn-primary w-50" onClick={submitAddtocart}>Add to Cart</button>
                         </div>
                 </div>
             
@@ -119,6 +118,8 @@ function ProductDetail(props)
 
     return(
         <div>
+            <NavbarContent />
+
             <div className="py-3 bg-warning">
                 <div className="container">
                     <h4>Collections / {product.category.name} / {product.name}</h4>
@@ -130,7 +131,7 @@ function ProductDetail(props)
                 <div className="container">
                     <div className="row">
                         <div className="col-md-4 border-end">
-                            <img src={`http://localhost:8000/${product.image}`} alt={product.name} className="w-100" />
+                            <img src={`${imageAPI}${product.image}`} alt={product.name} className="w-100" />
                         </div>
                         <div className="col-md-8">
                             <h4>
@@ -139,8 +140,19 @@ function ProductDetail(props)
                             </h4>
                             <p>{product.description}</p>
                             <h4 className="mb-1">
-                                Sale price:{product.seller_price}
-                                <s className="ms-2">Origin price:{product.origin_price}</s>
+                                <div className="ms-2">
+                                    Sale price:  
+                                    <NumericFormat value={product.seller_price}  displayType={"text"} thousandSeparator={','} suffix={' vnd'} />
+                                </div>
+                                <div>
+                                    <span className="ms-2">
+                                        Origin price: 
+                                        <s className="ms-2">
+                                            <NumericFormat value={product.origin_price}  displayType={"text"} thousandSeparator={','} suffix={' vnd'} />    
+                                        </s>
+                                    </span>
+                                </div>
+                                
                             </h4>
                             <div>
                                 {avail_stock}

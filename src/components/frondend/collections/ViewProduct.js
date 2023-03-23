@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import { Link, useHistory } from "react-router-dom";
+import Top from "../../../layouts/frondend/Top.js"
+import {pathProduct} from '../../../constant/Constant'
+import NavbarContent from '../../../layouts/frondend/NavbarContent'
+import { imageAPI } from '../../../constant/Constant';
+
 
 
 function ViewProduct(props)
@@ -16,7 +21,7 @@ function ViewProduct(props)
         let isMounted = true;
         
         const product_slug = props.match.params.slug; 
-        axios.get(`/api/fetchproducts/${product_slug}`).then(res=>{
+        axios.get(`/api/view/fetchproducts/${product_slug}`).then(res=>{
             if(isMounted)
             {
                 if(res.data.status === 200)
@@ -56,7 +61,7 @@ function ViewProduct(props)
                     <div className="col-md-3" key={idx}> 
                         <div className="card">
                             <Link to={`/collections/${item.category.slug}/${item.slug}`}>
-                                <img src={`http://localhost:8000/${item.image}`} className="w-100" alt={item.name} />
+                                <img src={`${imageAPI}${item.image}`} className="w-100" alt={item.name} />
                             </Link>
                             
                             <div className="card-body">
@@ -82,13 +87,9 @@ function ViewProduct(props)
     }
     return (
         <div>
-            <div className="py-3 bg-warning">
-                <div className="container">
-                    <h6>Collections / {category.name}</h6>
+            <NavbarContent />
+            <Top  path={pathProduct.path} name={pathProduct.name}/>
 
-                </div>
-
-            </div> 
 
             <div className="py-3 ">
                 <div className="container">

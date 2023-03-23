@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { NumericFormat } from 'react-number-format';
+import swal from 'sweetalert'
+import {imageAPI} from '../../../constant/Constant'
 
 function ViewProduct(){
     const [loading, setLoading] = useState(true)
     const [viewProduct, setViewProduct] = useState([])
     useEffect(() =>{
         document.title = "View Products"
-        axios.get('/api/view_product')
+        axios.get('/api/product/view_product')
             .then( res => {
                 if(res.data.status === 200 ){
                     setViewProduct(res.data.products);
@@ -16,7 +18,20 @@ function ViewProduct(){
                 }
             })
     }, [])
-    const handleDelete = () => {}
+    const handleDelete = (e, id) => {
+        e.preventDefault()
+        const clicked = e.currentTarget
+        axios.put(`/api/product/delete_product/${id}`)
+            .then(res => {
+                if(res.data.status === 200){
+                    swal("success", res.data.message, 'success')
+                    clicked.closest('tr').remove()
+                }else if(res.data.status === 404){
+                    swal("Error", res.data.message, "error")
+                }
+            })
+        
+    }
     var viewDisplay = ''
     if(loading) {
         return(
@@ -32,16 +47,14 @@ function ViewProduct(){
                 */}
                 <td>{data.category.name}</td>
                 <td>{data.name}</td>
-                <td><img src={`http://localhost:8000/${data.image}`} width="100px"/></td>
+                <td><img src={`${imageAPI}${data.image}`} width="100px" alt={`${data.name}`}/></td>
                 <td><NumericFormat value={data.seller_price}  displayType={"text"} thousandSeparator={','} suffix={' vnd'}/></td>
-
                 <td>
                     <Link to={`/admin/edit_product/${data.id}`} className="btn btn-success btn-sm">Edit</Link>
                 </td>
                 <td>
                     <button onClick={(e) => handleDelete(e, data.id)}  className="btn btn-danger btn-sm">Delete</button>
                 </td>
-
             </tr>
             )
         })

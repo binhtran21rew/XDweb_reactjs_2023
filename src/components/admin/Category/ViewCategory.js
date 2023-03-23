@@ -9,7 +9,7 @@ function ViewCategory(){
     useEffect(() => {
         document.title = "View Categories"
 
-        axios.get('/api/view_category')
+        axios.get('/api/category/view_category')
             .then(res => {
                 if(res.status === 200){
 
@@ -21,7 +21,7 @@ function ViewCategory(){
     const handleDelete = (e, id) => {
         e.preventDefault()
         const clicked = e.currentTarget
-        axios.put(`/api/delete_category/${id}`)
+        axios.put(`/api/category/delete_category/${id}`)
             .then(res => {
                 if(res.data.status === 200){
                     swal("success", res.data.message, 'success')

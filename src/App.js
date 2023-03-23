@@ -1,6 +1,5 @@
 import React from 'react';
 import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom'
-import MasterLayout from './layouts/admin/MasterLayout';
 
 import PublicRoute from './PublicRoute';
 import Login  from './components/frondend/auth/Login';
@@ -12,7 +11,9 @@ import Page403 from './components/errors/Page403';
 import Page404 from './components/errors/Page404';
 
 
-axios.defaults.baseURL = "http://localhost:8000/"
+axios.defaults.baseURL = "https://bkshop.site/"
+// axios.defaults.baseURL = "http://localhost:8000/"
+
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.post['Accept'] = '*/*'
 axios.defaults.withCredentials = true;

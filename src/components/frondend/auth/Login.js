@@ -46,7 +46,6 @@ function Login(){
     }
     return (
         <div>
-            <Navbar />
             <div className="container py-5">
                 <div className='row justify-content-center'>
                     <div className="col-md-6">
@@ -58,7 +57,7 @@ function Login(){
                                 <form onSubmit={loginSubmit}>
                                     <div className='form-group mb-3'>
                                         <label>Email</label>
-                                        <input type="" name="email" onChange={handleInput} value={loginInput.email} className="form-control" />
+                                        <input type="text" name="email" onChange={handleInput} value={loginInput.email} className="form-control" />
                                         <span>{loginInput.err_list.email}</span>
                                     </div> 
                                     <div className='form-group mb-3'>
