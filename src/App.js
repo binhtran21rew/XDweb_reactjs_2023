@@ -11,8 +11,8 @@ import Page403 from './components/errors/Page403';
 import Page404 from './components/errors/Page404';
 
 
-axios.defaults.baseURL = "https://bkshop.site/"
-// axios.defaults.baseURL = "http://localhost:8000/"
+// axios.defaults.baseURL = "https://bkshop.site/"
+axios.defaults.baseURL = "http://localhost:8000/"
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.post['Accept'] = '*/*'
