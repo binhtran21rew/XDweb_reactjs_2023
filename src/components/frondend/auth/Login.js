@@ -49,6 +49,10 @@ function Login(){
             <div className="container py-5">
                 <div className='row justify-content-center'>
                     <div className="col-md-6">
+                        <h3>
+                            admin123@gmail.com
+                        </h3>
+                        password: admin123
                         <div className='card'>
                             <div className="card-header">
                                 <h4>Login</h4>    
